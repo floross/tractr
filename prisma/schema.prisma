@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource postgresql {
+    provider = "postgresql"
+    url      = env("TRACTR_DATABASE_URL")
+}
+
+model User {
+  id          String  @default(uuid()) @id
+  email       String  @unique
+  username    String
+  password    String
+  salt        String
+  name        String
+  phone       String
+  pictureUrl  String
+  nationality String
+  gender      String
+  birthdate   DateTime
+}
