@@ -12,7 +12,7 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri: publicRuntimeConfig.TRACTR_GRAPHQL_ENDPOINT, // Server URL (must be absolute)
+      uri: `${publicRuntimeConfig.TRACTR_GRAPHQL_PROTO}://${publicRuntimeConfig.TRACTR_GRAPHQL_URL}${publicRuntimeConfig.TRACTR_GRAPHQL_ENDPOINT}`,
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
     cache: new InMemoryCache(),
