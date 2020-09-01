@@ -30,13 +30,13 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
               <th className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 User
               </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="hidden lg:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="hidden md:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Nationality
               </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="hidden lg:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Birth date
               </th>
             </tr>
@@ -63,17 +63,17 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-5 border-b border-tractr-grey text-sm">
+                      <td className="hidden lg:table-cell px-5 py-5 border-b border-tractr-grey text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
                           {email}
                         </p>
                       </td>
-                      <td className="px-5 py-5 border-b border-tractr-grey text-sm">
+                      <td className="hidden md:table-cell px-5 py-5 border-b border-tractr-grey text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
                           {nationality}
                         </p>
                       </td>
-                      <td className="px-5 py-5 border-b border-tractr-grey text-sm">
+                      <td className="hidden lg:table-cell px-5 py-5 border-b border-tractr-grey text-sm">
                         <p className="text-gray-900 whitespace-no-wrap">
                           {birthdate}
                         </p>

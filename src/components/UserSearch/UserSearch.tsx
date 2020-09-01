@@ -78,7 +78,7 @@ export const UserSearch = ({
           Filter
         </div>
         <div className="px-5 py-5 border-b border-tractr-grey text-sm">
-          <form>
+          <form onSubmit={() => null}>
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
