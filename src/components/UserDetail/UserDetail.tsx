@@ -35,7 +35,6 @@ export interface UserDetailProps {
 export const UserDetail: React.FunctionComponent<UserDetailProps> = ({
   user,
 }) => {
-  console.log(user);
   return (
     <div className="max-w-sm bg-white shadow-lg rounded-lg overflow-hidden my-4 flex flex-col">
       <div className="w-full h-56 flex justify-center items-center">

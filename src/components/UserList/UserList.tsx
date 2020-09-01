@@ -21,7 +21,6 @@ export interface UserListProps {
 }
 
 export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
-  console.log(users);
   return (
     <div className=" px-4 sm:px-8 py-4 overflow-x-auto">
       <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { NormalizedCacheObject } from '@apollo/react-hooks';
+import getConfig from 'next/config';
+
+// Get configuration from .env
+const { publicRuntimeConfig } = getConfig();
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -8,7 +12,7 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri: 'http://localhost:3000/api', // Server URL (must be absolute)
+      uri: publicRuntimeConfig.TRACTR_GRAPHQL_ENDPOINT, // Server URL (must be absolute)
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
     cache: new InMemoryCache(),
