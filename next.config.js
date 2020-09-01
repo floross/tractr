@@ -6,6 +6,7 @@ dotenv.config();
 
 module.exports = {
   publicRuntimeConfig: {
-    TRACTR_GRAPHQL_ENDPOINT: process.env.TRACTR_GRAPHQL_ENDPOINT,
+    TRACTR_GRAPHQL_ENDPOINT:
+      process.env.TRACTR_GRAPHQL_ENDPOINT || process.env.VERCEL_URL,
   },
 };
