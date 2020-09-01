@@ -10,6 +10,7 @@ representation of dates and times using the Gregorian calendar.
 scalar Date
 
 type Query {
+  filteredUsers(contains: String): [User!]!
   user(id: String): User!
   users: [User!]!
 }

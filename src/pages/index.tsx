@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User } from '@prisma/client';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
@@ -9,13 +9,16 @@ import {
   ALL_USERS_LIST,
   UserListProps,
 } from '../components/UserList';
+import { UserSearch } from '../components/UserSearch';
 
 export default function UserListPage({
   users,
 }: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
+  const [userFiltered, setState] = useState(users);
   return (
     <Layout>
-      <UserList users={users} />
+      <UserSearch users={users} onFilterUsers={setState} />
+      <UserList users={userFiltered} />
     </Layout>
   );
 }

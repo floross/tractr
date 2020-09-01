@@ -64,6 +64,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Query: { // field return type
+    filteredUsers: NexusGenRootTypes['User'][]; // [User!]!
     user: NexusGenRootTypes['User']; // User!
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
@@ -84,6 +85,9 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Query: {
+    filteredUsers: { // args
+      contains?: string | null; // String
+    }
     user: { // args
       id?: string | null; // String
     }

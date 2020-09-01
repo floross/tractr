@@ -51,6 +51,21 @@ const Query = objectType({
         });
       },
     });
+
+    t.list.field('filteredUsers', {
+      type: 'User',
+      args: { contains: stringArg() },
+      resolve: (_, args) => {
+        return prisma.user.findMany({
+          where: {
+            name: {
+              contains: args.contains,
+              mode: 'insensitive',
+            },
+          },
+        });
+      },
+    });
   },
 });
 

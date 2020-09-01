@@ -22,7 +22,7 @@ export interface UserListProps {
 
 export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
   return (
-    <div className=" px-4 sm:px-8 py-4 overflow-x-auto">
+    <div className="min-w-full px-4 sm:px-8 py-4 overflow-x-auto">
       <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
         <table className="min-w-full leading-normal">
           <thead>
