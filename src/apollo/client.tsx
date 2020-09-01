@@ -8,6 +8,10 @@ const { publicRuntimeConfig } = getConfig();
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
+console.log(
+  `${publicRuntimeConfig.TRACTR_GRAPHQL_PROTO}://${publicRuntimeConfig.TRACTR_GRAPHQL_URL}${publicRuntimeConfig.TRACTR_GRAPHQL_ENDPOINT}`,
+);
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
