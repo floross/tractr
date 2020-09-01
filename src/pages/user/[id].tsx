@@ -1,11 +1,19 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps } from 'next';
-import { User } from '@prisma/client';
+import { User, PrismaClient } from '@prisma/client';
 
-import { initializeApollo } from '../../apollo/client';
 import { Layout } from '../../components/Layout';
-import { UserDetail, USER_DETAIL } from '../../components/UserDetail';
+import { UserDetail } from '../../components/UserDetail';
+import { ParsedUrlQuery } from 'querystring';
+
+export interface UserDetailProps {
+  user: User;
+}
+
+export interface UserDetailParam extends ParsedUrlQuery {
+  id: string;
+}
 
 export const ALL_USERS_ID = gql`
   {
@@ -25,14 +33,12 @@ export default function UserDetailPage({
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const apolloClient = initializeApollo();
-  const users = (
-    await apolloClient.query({
-      query: ALL_USERS_ID,
-    })
-  ).data.users as Pick<User, 'id'>[];
-
+export const getStaticPaths: GetStaticPaths<UserDetailParam> = async () => {
+  const prisma = new PrismaClient();
+  const users = await prisma.user.findMany({
+    select: { id: true },
+  });
+  await prisma.$disconnect();
   return {
     paths: users.map(({ id }) => ({
       params: {
@@ -43,16 +49,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const apolloClient = initializeApollo();
-  const user = (
-    await apolloClient.query({
-      query: USER_DETAIL,
-      variables: {
-        id: params.id,
-      },
-    })
-  ).data.user as User[];
-
-  return { props: { user } };
+export const getStaticProps: GetStaticProps<
+  UserDetailProps,
+  UserDetailParam
+> = async ({ params }) => {
+  const prisma = new PrismaClient();
+  const user = await prisma.user.findOne({
+    where: {
+      id: params.id,
+    },
+  });
+  await prisma.$disconnect();
+  return { props: { user: JSON.parse(JSON.stringify(user)) } };
 };
