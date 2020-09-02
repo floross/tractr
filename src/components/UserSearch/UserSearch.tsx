@@ -68,6 +68,13 @@ export function getNationalitiesFromUserList(users: User[]): string[] {
   }, []);
 }
 
+export function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void {
+  // When keyboard press enter remove keyboard focus (Close the keyboard on the phone)
+  if (e.keyCode === 13) {
+    e.currentTarget.blur();
+  }
+}
+
 export const UserSearch = ({
   users,
   onUserListFiltered,
@@ -119,6 +126,7 @@ export const UserSearch = ({
                   contains: e.target.value,
                 });
               }}
+              onKeyDown={handleKeyPress}
             />
           </div>
           <div className="mb-4 flex flex-row flex-wrap">
