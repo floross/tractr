@@ -17,7 +17,7 @@ export default function UserListPage({
   const [userFiltered, setState] = useState(users);
   return (
     <Layout>
-      <UserSearch users={users} onFilterUsers={setState} />
+      <UserSearch users={users} onUserListFiltered={setState} />
       <UserList users={userFiltered} />
     </Layout>
   );

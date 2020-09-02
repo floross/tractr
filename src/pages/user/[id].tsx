@@ -2,10 +2,13 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps } from 'next';
 import { User, PrismaClient } from '@prisma/client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 import { Layout } from '../../components/Layout';
 import { UserDetail } from '../../components/UserDetail';
 import { ParsedUrlQuery } from 'querystring';
+import Link from 'next/link';
 
 export interface UserDetailProps {
   user: User;
@@ -28,7 +31,14 @@ export default function UserDetailPage({
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   return (
     <Layout>
-      <UserDetail user={user} />
+      <div className="relative w-full h-full flex justify-center items-center flex-col">
+        <Link href="/">
+          <button className="sm:absolute top-0 left-0 relative mt-4 ml-4 bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow">
+            <FontAwesomeIcon icon={faArrowLeft} /> Home
+          </button>
+        </Link>
+        <UserDetail user={user} />
+      </div>
     </Layout>
   );
 }

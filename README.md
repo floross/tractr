@@ -65,3 +65,5 @@ The `UserList` page is built with NextJS ssr mode and the `UserDetail` page is b
 ## Way to improuve the app
 
 * Write unit and integration test
+* Split and normalize form components
+* Use a global state management (promising one is [Recoil.js](https://recoiljs.org/))

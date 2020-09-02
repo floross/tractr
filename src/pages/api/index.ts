@@ -3,13 +3,25 @@ import {
   objectType,
   asNexusMethod,
   stringArg,
+  arg,
 } from '@nexus/schema';
-import { GraphQLDate } from 'graphql-iso-date';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import { PrismaClient } from '@prisma/client';
 import { ApolloServer } from 'apollo-server-micro';
 import path from 'path';
+import { NexusArgDef } from '@nexus/schema/dist/definitions/args';
 
-export const GQLDate = asNexusMethod(GraphQLDate, 'date');
+export const GQLDate = asNexusMethod(GraphQLDate, 'date', 'Date');
+export const GQLDateTime = asNexusMethod(
+  GraphQLDateTime,
+  'datetime',
+  'DateTime',
+);
+
+export const dateArg = (opts = {}): NexusArgDef<'Date'> =>
+  arg({ ...opts, type: 'Date' });
+export const dateTimeArg = (opts = {}): NexusArgDef<'DateTime'> =>
+  arg({ ...opts, type: 'DateTime' });
 
 const prisma = new PrismaClient();
 
@@ -54,14 +66,40 @@ const Query = objectType({
 
     t.list.field('filteredUsers', {
       type: 'User',
-      args: { contains: stringArg() },
-      resolve: (_, args) => {
-        return prisma.user.findMany({
-          where: {
+      args: {
+        contains: stringArg(),
+        startDate: dateTimeArg(),
+        endDate: dateTimeArg(),
+        nationality: stringArg(),
+      },
+      resolve: async (_, args) => {
+        const AND = [];
+        if (args.contains && args.contains !== '')
+          AND.push({
             name: {
               contains: args.contains,
               mode: 'insensitive',
             },
+          });
+        if (args.startDate)
+          AND.push({
+            birthdate: {
+              gte: args.startDate,
+            },
+          });
+        if (args.endDate)
+          AND.push({
+            birthdate: {
+              lte: args.endDate,
+            },
+          });
+        if (args.nationality && args.nationality !== '')
+          AND.push({
+            nationality: args.nationality,
+          });
+        return await prisma.user.findMany({
+          where: {
+            AND,
           },
         });
       },
@@ -70,7 +108,7 @@ const Query = objectType({
 });
 
 export const schema = makeSchema({
-  types: [Query, User, GQLDate],
+  types: [Query, User, GQLDate, GQLDateTime],
   outputs: {
     typegen: path.join(
       process.cwd(),
