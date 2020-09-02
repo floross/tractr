@@ -1,72 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import { User } from '@prisma/client';
-import { initializeApollo } from '../../apollo/client';
+import React, { useState } from 'react';
 import gql from 'graphql-tag';
-import { usePrevious } from '../../hooks/use-previous.hook';
+import { useQuery, NetworkStatus } from '@apollo/react-hooks';
+import { User } from '@prisma/client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUndoAlt, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
-export const FILTERED_USERS = gql`
+import { MAX_ITEM_PER_LIST } from '../../constants/list.constant';
+import { UserList } from '../UserList';
+
+export const QUERY_FILTERED_USERS = gql`
   query filteredUsers(
     $contains: String
     $startDate: DateTime
     $endDate: DateTime
     $nationality: String
+    $cursor: String
+    $take: Int
   ) {
     filteredUsers(
       contains: $contains
       startDate: $startDate
       endDate: $endDate
       nationality: $nationality
+      cursor: $cursor
+      take: $take
     ) {
-      id
-      email
-      name
-      pictureUrl
-      nationality
-      birthdate
+      users {
+        id
+        email
+        name
+        pictureUrl
+        nationality
+        birthdate
+      }
+      count
+      cursor
     }
   }
 `;
 
-export interface UserListProps {
-  users: User[];
-  onUserListFiltered: (users: User[]) => void;
+export const QUERY_ALL_NATIONALITIES = gql`
+  query allNationalities {
+    allNationalities
+  }
+`;
+
+export interface FilteredUsersProps {
+  contains?: string;
+  startDate?: string;
+  endDate?: string;
+  nationality?: string;
 }
 
-export interface getFilteredUsersProps {
+export interface FilteredUsersQueryResults {
+  filteredUsers: {
+    users: User[];
+    count: number;
+    cursor: string;
+  };
+}
+
+export interface FilteredUsersQueryVariables {
   contains?: string;
   startDate?: Date;
   endDate?: Date;
   nationality?: string;
+  cursor?: string;
+  take?: number;
 }
 
-export async function getFilteredUsers({
-  contains,
-  startDate,
-  endDate,
-  nationality,
-}: getFilteredUsersProps): Promise<User[]> {
-  // Fetch data from external API
-  const apolloClient = initializeApollo();
-  const users = (
-    await apolloClient.query({
-      query: FILTERED_USERS,
-      variables: {
-        contains,
-        startDate,
-        endDate,
-        nationality,
-      },
-    })
-  ).data.filteredUsers as User[];
-  return users;
-}
-
-export function getNationalitiesFromUserList(users: User[]): string[] {
-  return users.reduce<string[]>((acc, user) => {
-    if (!acc.includes(user.nationality)) acc.push(user.nationality);
-    return acc;
-  }, []);
-}
+export const DEFAULT_FILTERED_PARAMS: FilteredUsersProps = {
+  contains: '',
+  startDate: '',
+  endDate: '',
+  nationality: '',
+};
 
 export function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void {
   // When keyboard press enter remove keyboard focus (Close the keyboard on the phone)
@@ -75,35 +83,61 @@ export function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void {
   }
 }
 
-export const UserSearch = ({
-  users,
-  onUserListFiltered,
-}: UserListProps): JSX.Element => {
+export function resetFilters(
+  setFilteredParams: React.Dispatch<React.SetStateAction<FilteredUsersProps>>,
+): void {
+  setFilteredParams(DEFAULT_FILTERED_PARAMS);
+}
+
+export const UserSearch = (): JSX.Element => {
   // Keep a track of the filtered params and the previous one
-  const [filteredParams, setFilteredParams] = useState<getFilteredUsersProps>({
-    contains: '',
-    startDate: null,
-    endDate: null,
-    nationality: '',
+  const [filteredParams, setFilteredParams] = useState<FilteredUsersProps>(
+    DEFAULT_FILTERED_PARAMS,
+  );
+
+  const nationalities = useQuery(QUERY_ALL_NATIONALITIES).data
+    ?.allNationalities;
+
+  const { loading, error, data, fetchMore, networkStatus } = useQuery<
+    FilteredUsersQueryResults,
+    FilteredUsersQueryVariables
+  >(QUERY_FILTERED_USERS, {
+    variables: {
+      contains: filteredParams.contains,
+      startDate:
+        filteredParams.startDate !== ''
+          ? new Date(filteredParams.startDate)
+          : null,
+      endDate:
+        filteredParams.endDate !== '' ? new Date(filteredParams.endDate) : null,
+      nationality: filteredParams.nationality,
+      take: MAX_ITEM_PER_LIST,
+    },
+    notifyOnNetworkStatusChange: true,
   });
-  const previousFilteredParam = usePrevious(filteredParams);
 
-  const nationalities = getNationalitiesFromUserList(users);
+  const loadingMorePosts = networkStatus === NetworkStatus.fetchMore;
 
-  useEffect(() => {
-    console.log(filteredParams);
-    if (!previousFilteredParam || filteredParams === previousFilteredParam)
-      return;
+  // setFilteredUserCursor();
+  const results = data?.filteredUsers;
+  const users = results?.users || [];
+  const totalUsers = results?.count;
+  const cursor = results?.cursor;
 
-    // If the filtered param have change we do execute a call to the graphql Endpoint to get the results
-    getFilteredUsers(filteredParams).then((users) => {
-      onUserListFiltered(users);
-    });
-  });
+  const isMoreUserToFetch = users?.length < totalUsers;
+
+  if (error)
+    return (
+      <div className="min-w-full px-4 sm:px-8 py-4 overflow-x-auto">
+        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+          Error during fetching users...
+        </div>
+      </div>
+    );
 
   return (
     <div className="min-w-full px-4 sm:px-8 py-4 overflow-x-auto">
-      <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+      <div className="inline-block min-w-full px-4 shadow rounded-lg overflow-hidden">
         <div className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
           Filter
         </div>
@@ -120,6 +154,7 @@ export const UserSearch = ({
               id="username-contains"
               type="text"
               placeholder="Username contains..."
+              value={filteredParams.contains}
               onChange={(e) => {
                 setFilteredParams({
                   ...filteredParams,
@@ -142,10 +177,11 @@ export const UserSearch = ({
                 id="start-date"
                 type="date"
                 placeholder="Birthday is greater than..."
+                value={filteredParams.startDate}
                 onChange={(e) => {
                   setFilteredParams({
                     ...filteredParams,
-                    startDate: new Date(e.target.value),
+                    startDate: e.target.value,
                   });
                 }}
               />
@@ -162,10 +198,11 @@ export const UserSearch = ({
                 id="end-date"
                 type="date"
                 placeholder="Birthday is lesser than..."
+                value={filteredParams.endDate}
                 onChange={(e) => {
                   setFilteredParams({
                     ...filteredParams,
-                    endDate: new Date(e.target.value),
+                    endDate: e.target.value,
                   });
                 }}
               />
@@ -182,6 +219,7 @@ export const UserSearch = ({
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="nationalities"
               placeholder="Nationalities..."
+              value={filteredParams.nationality}
               onChange={(e) => {
                 setFilteredParams({
                   ...filteredParams,
@@ -197,8 +235,44 @@ export const UserSearch = ({
               ))}
             </select>
           </div>
+
+          <div className="mb-4 flex justify-end">
+            <button
+              className=" bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
+              onClick={() => resetFilters(setFilteredParams)}
+            >
+              <FontAwesomeIcon icon={faUndoAlt} /> Reset
+            </button>
+          </div>
         </div>
       </div>
+      {loading && !loadingMorePosts ? (
+        <div>Loading users...</div>
+      ) : (
+        <UserList users={users} />
+      )}
+      {isMoreUserToFetch && (
+        <div className="min-w-full flex justify-center items-center h-16">
+          <button
+            className="bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
+            disabled={loadingMorePosts}
+            onClick={() =>
+              fetchMore({
+                variables: {
+                  contains: filteredParams.contains,
+                  startDate: new Date(filteredParams.startDate),
+                  endDate: new Date(filteredParams.endDate),
+                  nationality: filteredParams.nationality,
+                  cursor,
+                  take: MAX_ITEM_PER_LIST,
+                },
+              })
+            }
+          >
+            <FontAwesomeIcon icon={faCaretDown} /> Load more
+          </button>
+        </div>
+      )}
     </div>
   );
 };

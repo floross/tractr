@@ -10,14 +10,6 @@ import { UserDetail } from '../../components/UserDetail';
 import { ParsedUrlQuery } from 'querystring';
 import Link from 'next/link';
 
-export interface UserDetailProps {
-  user: User;
-}
-
-export interface UserDetailParam extends ParsedUrlQuery {
-  id: string;
-}
-
 export const ALL_USERS_ID = gql`
   {
     users {
@@ -25,6 +17,14 @@ export const ALL_USERS_ID = gql`
     }
   }
 `;
+
+export interface UserDetailProps {
+  user: User;
+}
+
+export interface UserDetailParam extends ParsedUrlQuery {
+  id: string;
+}
 
 export default function UserDetailPage({
   user,

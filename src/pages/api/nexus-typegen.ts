@@ -54,6 +54,11 @@ export interface NexusGenRootTypes {
     salt: string; // String!
     username: string; // String!
   }
+  UserSearchResult: { // root type
+    count: number; // Int!
+    cursor?: string | null; // String
+    users: NexusGenRootTypes['User'][]; // [User!]!
+  }
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -68,9 +73,9 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Query: { // field return type
-    filteredUsers: NexusGenRootTypes['User'][]; // [User!]!
+    allNationalities: string[]; // [String!]!
+    filteredUsers: NexusGenRootTypes['UserSearchResult']; // UserSearchResult!
     user: NexusGenRootTypes['User']; // User!
-    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
     birthdate: NexusGenScalars['Date']; // Date!
@@ -85,15 +90,22 @@ export interface NexusGenFieldTypes {
     salt: string; // String!
     username: string; // String!
   }
+  UserSearchResult: { // field return type
+    count: number; // Int!
+    cursor: string | null; // String
+    users: NexusGenRootTypes['User'][]; // [User!]!
+  }
 }
 
 export interface NexusGenArgTypes {
   Query: {
     filteredUsers: { // args
       contains?: string | null; // String
+      cursor?: string | null; // String
       endDate?: NexusGenScalars['DateTime'] | null; // DateTime
       nationality?: string | null; // String
       startDate?: NexusGenScalars['DateTime'] | null; // DateTime
+      take?: number | null; // Int
     }
     user: { // args
       id?: string | null; // String
@@ -106,7 +118,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Query" | "User";
+export type NexusGenObjectNames = "Query" | "User" | "UserSearchResult";
 
 export type NexusGenInputNames = never;
 

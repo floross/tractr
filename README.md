@@ -67,4 +67,5 @@ The `UserList` page is built with NextJS ssr mode and the `UserDetail` page is b
 * Write unit and integration test
 * Split and normalize form components
 * Use a global state management (promising one is [Recoil.js](https://recoiljs.org/))
-* Add pagination to the user list
+* -> Keep track of the filtered params accros the pages
+

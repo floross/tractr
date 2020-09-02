@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { NormalizedCacheObject } from '@apollo/react-hooks';
-import getConfig from 'next/config';
-
-// Get configuration from .env
-const { publicRuntimeConfig } = getConfig();
+import { SERVERLESS_URL } from '../constants/servers.constant';
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -12,10 +9,27 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri: `${publicRuntimeConfig.TRACTR_GRAPHQL_PROTO}://${publicRuntimeConfig.TRACTR_GRAPHQL_URL}${publicRuntimeConfig.TRACTR_GRAPHQL_ENDPOINT}`,
+      uri: SERVERLESS_URL,
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            filteredUsers: {
+              keyArgs: ['contains', 'startDate', 'endDate', 'nationality'],
+              merge(existing = {}, incoming = {}) {
+                return {
+                  ...existing,
+                  ...incoming,
+                  users: [...(existing.users || []), ...(incoming.users || [])],
+                };
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 }
 

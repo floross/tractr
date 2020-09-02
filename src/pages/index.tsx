@@ -1,38 +1,36 @@
-import React, { useState } from 'react';
-import { User } from '@prisma/client';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import React from 'react';
+import { GetServerSideProps } from 'next';
 
 import { initializeApollo } from '../apollo/client';
 import { Layout } from '../components/Layout/Layout';
 import {
-  UserList,
-  ALL_USERS_LIST,
-  UserListProps,
-} from '../components/UserList';
-import { UserSearch } from '../components/UserSearch';
+  UserSearch,
+  QUERY_FILTERED_USERS,
+  QUERY_ALL_NATIONALITIES,
+} from '../components/UserSearch';
+import { MAX_ITEM_PER_LIST } from '../constants/list.constant';
 
-export default function UserListPage({
-  users,
-}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element {
-  const [userFiltered, setState] = useState(users);
+export default function UserListPage(): JSX.Element {
   return (
     <Layout>
-      <UserSearch users={users} onUserListFiltered={setState} />
-      <UserList users={userFiltered} />
+      <UserSearch />
     </Layout>
   );
 }
 
 // This gets called on every request
-export const getServerSideProps: GetServerSideProps<UserListProps> = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // Fetch data from external API
   const apolloClient = initializeApollo();
-  const users = (
-    await apolloClient.query({
-      query: ALL_USERS_LIST,
-    })
-  ).data.users as User[];
+  await apolloClient.query({
+    query: QUERY_FILTERED_USERS,
+    variables: { take: MAX_ITEM_PER_LIST },
+  });
+
+  await apolloClient.query({
+    query: QUERY_ALL_NATIONALITIES,
+  });
 
   // Pass data to the page via props
-  return { props: { users } };
+  return { props: { initialApolloState: apolloClient.cache.extract() } };
 };

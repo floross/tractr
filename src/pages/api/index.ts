@@ -6,10 +6,10 @@ import {
   arg,
 } from '@nexus/schema';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, FindManyUserArgs } from '@prisma/client';
 import { ApolloServer } from 'apollo-server-micro';
 import path from 'path';
-import { NexusArgDef } from '@nexus/schema/dist/definitions/args';
+import { NexusArgDef, intArg } from '@nexus/schema/dist/definitions/args';
 
 export const GQLDate = asNexusMethod(GraphQLDate, 'date', 'Date');
 export const GQLDateTime = asNexusMethod(GraphQLDateTime, 'datetime', 'Date');
@@ -38,16 +38,18 @@ const User = objectType({
   },
 });
 
+const UserSearchResult = objectType({
+  name: 'UserSearchResult',
+  definition(t) {
+    t.list.field('users', { type: 'User' });
+    t.field('count', { type: 'Int' });
+    t.field('cursor', { type: 'String', nullable: true });
+  },
+});
+
 const Query = objectType({
   name: 'Query',
   definition(t) {
-    t.list.field('users', {
-      type: 'User',
-      resolve: () => {
-        return prisma.user.findMany();
-      },
-    });
-
     t.field('user', {
       type: 'User',
       args: { id: stringArg() },
@@ -60,51 +62,95 @@ const Query = objectType({
       },
     });
 
-    t.list.field('filteredUsers', {
-      type: 'User',
+    t.list.field('allNationalities', {
+      type: 'String',
+      resolve: async () => {
+        return (
+          await prisma.user.findMany({
+            distinct: 'nationality',
+            select: { nationality: true },
+          })
+        ).reduce<string[]>((acc, user) => {
+          acc.push(user.nationality);
+          return acc;
+        }, []);
+      },
+    });
+
+    t.field('filteredUsers', {
+      type: 'UserSearchResult',
       args: {
         contains: stringArg(),
         startDate: dateTimeArg(),
         endDate: dateTimeArg(),
         nationality: stringArg(),
+        cursor: stringArg(),
+        take: intArg(),
       },
-      resolve: async (_, args) => {
+
+      resolve: async (
+        _,
+        { contains, startDate, endDate, nationality, cursor, take },
+      ) => {
+        let findManyArgs = {};
+
+        // Construct the AND filtering
         const AND = [];
-        if (args.contains && args.contains !== '')
+        if (contains && contains !== '')
           AND.push({
             name: {
-              contains: args.contains,
+              contains,
               mode: 'insensitive',
             },
           });
-        if (args.startDate)
+        if (startDate)
           AND.push({
             birthdate: {
-              gte: args.startDate,
+              gte: startDate,
             },
           });
-        if (args.endDate)
+        if (endDate)
           AND.push({
             birthdate: {
-              lte: args.endDate,
+              lte: endDate,
             },
           });
-        if (args.nationality && args.nationality !== '')
+        if (nationality && nationality !== '')
           AND.push({
-            nationality: args.nationality,
+            nationality: nationality,
           });
-        return await prisma.user.findMany({
-          where: {
-            AND,
-          },
-        });
+
+        if (AND.length > 0) findManyArgs = { ...findManyArgs, where: { AND } };
+
+        const findManyArgsWithTake: FindManyUserArgs = { ...findManyArgs };
+
+        // Build the cursor positional
+        if (take) {
+          findManyArgsWithTake.take = take;
+          if (cursor) {
+            findManyArgsWithTake.cursor = { id: cursor };
+            findManyArgsWithTake.skip = 1;
+          }
+        }
+
+        console.log(findManyArgsWithTake);
+        console.log(findManyArgs);
+
+        return Promise.all([
+          await prisma.user.findMany(findManyArgsWithTake),
+          await prisma.user.count(findManyArgs),
+        ]).then(([users, count]) => ({
+          users,
+          count,
+          cursor: users.slice(-1).pop()?.id,
+        }));
       },
     });
   },
 });
 
 export const schema = makeSchema({
-  types: [Query, User, GQLDate, GQLDateTime],
+  types: [Query, User, UserSearchResult, GQLDate, GQLDateTime],
   outputs: {
     typegen: path.join(
       process.cwd(),
