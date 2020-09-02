@@ -36,7 +36,7 @@ export interface NexusGenScalars {
   Boolean: boolean
   ID: string
   Date: Date
-  DateTime: DateTime
+  DateTime: Date
 }
 
 export interface NexusGenRootTypes {

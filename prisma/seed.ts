@@ -1,4 +1,4 @@
-import { PrismaClient, UserCreateInput } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 
 interface RandomUser {
@@ -39,7 +39,7 @@ async function main() {
   const users = (await response.json()).results as RandomUser[];
 
   const saving = users.map((randomUser) => {
-    const createOrUpdate: UserCreateInput = {
+    const createOrUpdate = {
       id: randomUser.login.uuid,
       email: randomUser.email,
       username: randomUser.login.username,
@@ -54,7 +54,19 @@ async function main() {
     };
     return prisma.user.upsert({
       create: createOrUpdate,
-      update: createOrUpdate,
+      update: {
+        id: { set: createOrUpdate.id },
+        email: { set: createOrUpdate.email },
+        username: { set: createOrUpdate.username },
+        password: { set: createOrUpdate.password },
+        salt: { set: createOrUpdate.salt },
+        name: { set: createOrUpdate.name },
+        phone: { set: createOrUpdate.phone },
+        pictureUrl: { set: createOrUpdate.pictureUrl },
+        nationality: { set: createOrUpdate.nationality },
+        gender: { set: createOrUpdate.gender },
+        birthdate: { set: createOrUpdate.birthdate },
+      },
       where: {
         id: randomUser.login.uuid,
       },

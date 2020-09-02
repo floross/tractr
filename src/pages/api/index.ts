@@ -12,11 +12,7 @@ import path from 'path';
 import { NexusArgDef } from '@nexus/schema/dist/definitions/args';
 
 export const GQLDate = asNexusMethod(GraphQLDate, 'date', 'Date');
-export const GQLDateTime = asNexusMethod(
-  GraphQLDateTime,
-  'datetime',
-  'DateTime',
-);
+export const GQLDateTime = asNexusMethod(GraphQLDateTime, 'datetime', 'Date');
 
 export const dateArg = (opts = {}): NexusArgDef<'Date'> =>
   arg({ ...opts, type: 'Date' });
