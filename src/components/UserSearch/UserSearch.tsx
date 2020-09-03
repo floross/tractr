@@ -186,13 +186,13 @@ export const UserSearch = (): JSX.Element => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="start-date"
               >
-                Start date
+                Date of birth after...
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="start-date"
                 type="date"
-                placeholder="Birthday is greater than..."
+                placeholder="Date of birth after...."
                 value={filteredParams.startDate}
                 onChange={(e) => {
                   setFilteredParams({
@@ -207,13 +207,13 @@ export const UserSearch = (): JSX.Element => {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="end-date"
               >
-                End date
+                Date of birth before...
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="end-date"
                 type="date"
-                placeholder="Birthday is lesser than..."
+                placeholder="Date of birth before..."
                 value={filteredParams.endDate}
                 onChange={(e) => {
                   setFilteredParams({
