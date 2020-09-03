@@ -25,7 +25,7 @@ export default function UserDetailPage({
       <div className="relative w-full h-full flex justify-center items-center flex-col">
         <Link href="/">
           <button className="sm:absolute top-0 left-0 relative mt-4 ml-4 bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow">
-            <FontAwesomeIcon icon={faArrowLeft} /> Home
+            <FontAwesomeIcon icon={faArrowLeft} className="h-4 w-4" /> Home
           </button>
         </Link>
         <UserDetail user={user} />

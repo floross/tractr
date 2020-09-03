@@ -29,7 +29,7 @@ export const UserDetail: React.FunctionComponent<UserDetailProps> = ({
         />
       </div>
       <div className="flex flex-row items-center px-6 py-3 bg-tractr-grey">
-        <FontAwesomeIcon icon={faUser} />
+        <FontAwesomeIcon icon={faUser} className="h-4 w-4" />
         <h1 className="mx-3 font-semibold text-lg">{user.name}</h1>
       </div>
       <div className="py-4 px-6">
@@ -37,25 +37,25 @@ export const UserDetail: React.FunctionComponent<UserDetailProps> = ({
           {user.username}
         </h1>
         <div className="flex items-center mt-4 text-gray-700">
-          <FontAwesomeIcon icon={faEnvelopeOpen} />
+          <FontAwesomeIcon icon={faEnvelopeOpen} className="h-4 w-4" />
           <h1 className="px-2 text-sm">{user.email}</h1>
         </div>
         <div className="flex items-center mt-4 text-gray-700">
-          <FontAwesomeIcon icon={faBirthdayCake} />
+          <FontAwesomeIcon icon={faBirthdayCake} className="h-4 w-4" />
           <h1 className="px-2 text-sm capitalize">
             {dateFormat(user.birthdate)}
           </h1>
         </div>
         <div className="flex items-center mt-4 text-gray-700">
-          <FontAwesomeIcon icon={faPhone} />
+          <FontAwesomeIcon icon={faPhone} className="h-4 w-4" />
           <h1 className="px-2 text-sm capitalize">{user.phone}</h1>
         </div>
         <div className="flex items-center mt-4 text-gray-700">
-          <FontAwesomeIcon icon={faLocationArrow} />
+          <FontAwesomeIcon icon={faLocationArrow} className="h-4 w-4" />
           <h1 className="px-2 text-sm capitalize">{user.nationality}</h1>
         </div>
         <div className="flex items-center mt-4 text-gray-700">
-          <FontAwesomeIcon icon={faVenusMars} />
+          <FontAwesomeIcon icon={faVenusMars} className="h-4 w-4" />
           <h1 className="px-2 text-sm capitalize">{user.gender}</h1>
         </div>
       </div>

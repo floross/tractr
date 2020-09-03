@@ -300,7 +300,7 @@ export const UserSearch = (): JSX.Element => {
               className=" bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
               onClick={() => resetFilters(setFilteredParams, setServerSource)}
             >
-              <FontAwesomeIcon icon={faUndoAlt} /> Reset
+              <FontAwesomeIcon className="h-4 w-4" icon={faUndoAlt} /> Reset
             </button>
           </div>
         </div>
@@ -328,7 +328,7 @@ export const UserSearch = (): JSX.Element => {
               })
             }
           >
-            <FontAwesomeIcon icon={faCaretDown} /> Load more
+            <FontAwesomeIcon className="h-4 w-4" icon={faCaretDown} /> Load more
           </button>
         </div>
       )}
