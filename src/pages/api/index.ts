@@ -34,7 +34,7 @@ const User = objectType({
     t.string('pictureUrl');
     t.string('nationality');
     t.string('gender');
-    t.date('birthdate');
+    t.datetime('birthdate');
   },
 });
 

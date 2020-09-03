@@ -1,6 +1,7 @@
 import React from 'react';
 import { User } from '@prisma/client';
 import Link from 'next/link';
+import { dateFormat } from '../../common/date-format';
 
 export interface UserListProps {
   users: User[];
@@ -63,7 +64,7 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
                     </td>
                     <td className="hidden lg:table-cell px-5 py-5 border-b border-tractr-grey text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {birthdate}
+                        {dateFormat(birthdate)}
                       </p>
                     </td>
                   </tr>

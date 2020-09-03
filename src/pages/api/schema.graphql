@@ -22,7 +22,7 @@ type Query {
 }
 
 type User {
-  birthdate: Date!
+  birthdate: DateTime!
   email: String!
   gender: String!
   id: String!

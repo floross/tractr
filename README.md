@@ -69,3 +69,6 @@ The `UserList` page is built with NextJS ssr mode and the `UserDetail` page is b
 * Use a global state management (promising one is [Recoil.js](https://recoiljs.org/))
 * -> Keep track of the filtered params accros the pages
 * Write beautiful error, loading and no users components
+* Make common code between `tractr-docker-server` and `tractr` (prisma model and server call call)
+* Manage locales (text and date)
+* Add more documentation and comments

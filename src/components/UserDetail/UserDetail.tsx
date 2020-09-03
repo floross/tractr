@@ -10,6 +10,7 @@ import {
   faUser,
   faVenusMars,
 } from '@fortawesome/free-solid-svg-icons';
+import { dateFormat } from '../../common/date-format';
 
 export interface UserDetailProps {
   user: User;
@@ -41,7 +42,9 @@ export const UserDetail: React.FunctionComponent<UserDetailProps> = ({
         </div>
         <div className="flex items-center mt-4 text-gray-700">
           <FontAwesomeIcon icon={faBirthdayCake} />
-          <h1 className="px-2 text-sm capitalize">{user.birthdate}</h1>
+          <h1 className="px-2 text-sm capitalize">
+            {dateFormat(user.birthdate)}
+          </h1>
         </div>
         <div className="flex items-center mt-4 text-gray-700">
           <FontAwesomeIcon icon={faPhone} />

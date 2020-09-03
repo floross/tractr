@@ -42,7 +42,7 @@ export interface NexusGenScalars {
 export interface NexusGenRootTypes {
   Query: {};
   User: { // root type
-    birthdate: NexusGenScalars['Date']; // Date!
+    birthdate: NexusGenScalars['DateTime']; // DateTime!
     email: string; // String!
     gender: string; // String!
     id: string; // String!
@@ -77,7 +77,7 @@ export interface NexusGenFieldTypes {
     getFilteredUsers: NexusGenRootTypes['UserSearchResult']; // UserSearchResult!
   }
   User: { // field return type
-    birthdate: NexusGenScalars['Date']; // Date!
+    birthdate: NexusGenScalars['DateTime']; // DateTime!
     email: string; // String!
     gender: string; // String!
     id: string; // String!

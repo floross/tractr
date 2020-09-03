@@ -87,10 +87,14 @@ export function handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>): void {
   }
 }
 
+export type SERVER_SOURCES = 'serverless' | 'docker';
+
 export function resetFilters(
   setFilteredParams: React.Dispatch<React.SetStateAction<FilteredUsersProps>>,
+  setServerSource: React.Dispatch<React.SetStateAction<SERVER_SOURCES>>,
 ): void {
   setFilteredParams(DEFAULT_FILTERED_PARAMS);
+  setServerSource('serverless');
 }
 
 export const UserSearch = (): JSX.Element => {
@@ -102,7 +106,7 @@ export const UserSearch = (): JSX.Element => {
   const nationalities = useQuery(QUERY_ALL_NATIONALITIES).data
     ?.getAllNationalities;
 
-  const [serverSource, setServerSource] = useState<'serverless' | 'docker'>(
+  const [serverSource, setServerSource] = useState<SERVER_SOURCES>(
     'serverless',
   );
 
@@ -140,8 +144,9 @@ export const UserSearch = (): JSX.Element => {
   if (error)
     return (
       <div className="min-w-full px-4 sm:px-8 py-4 overflow-x-auto">
-        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden p-4">
           Error during fetching users...
+          {error}
         </div>
       </div>
     );
@@ -293,7 +298,7 @@ export const UserSearch = (): JSX.Element => {
           <div className="mb-4 flex justify-end">
             <button
               className=" bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
-              onClick={() => resetFilters(setFilteredParams)}
+              onClick={() => resetFilters(setFilteredParams, setServerSource)}
             >
               <FontAwesomeIcon icon={faUndoAlt} /> Reset
             </button>
