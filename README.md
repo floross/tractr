@@ -9,6 +9,14 @@ I used in this test the new library Prisma (2.beta) in association with Nest.Js,
 
 A second server has been developed next to this app to acknowledge my capacity to develop both types of app.
 
+## App in production
+
+You can find the app in production at this url : [https://tractr.vercel.app/](https://tractr.vercel.app/)
+This app host serverless functions, but you can find a second server host in a docker container at this url [https://tractr-docker-graphql.rossiaud.net/graphql](https://tractr-docker-graphql.rossiaud.net/graphql)
+
+You can choose on which server your requests go via the app form. The both servers implement the same function and are linked to the same database.
+The second implemetation code is hostes here: [https://github.com/floross/tractr-docker-graphql](https://github.com/floross/tractr-docker-graphql)
+
 ## Prisma
 
 #### Migrate your model
