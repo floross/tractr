@@ -50,19 +50,7 @@ const UserSearchResult = objectType({
 const Query = objectType({
   name: 'Query',
   definition(t) {
-    t.field('user', {
-      type: 'User',
-      args: { id: stringArg() },
-      resolve: (_, args) => {
-        return prisma.user.findOne({
-          where: {
-            id: args.id,
-          },
-        });
-      },
-    });
-
-    t.list.field('allNationalities', {
+    t.list.field('getAllNationalities', {
       type: 'String',
       resolve: async () => {
         return (
@@ -77,7 +65,7 @@ const Query = objectType({
       },
     });
 
-    t.field('filteredUsers', {
+    t.field('getFilteredUsers', {
       type: 'UserSearchResult',
       args: {
         contains: stringArg(),
@@ -132,9 +120,6 @@ const Query = objectType({
             findManyArgsWithTake.skip = 1;
           }
         }
-
-        console.log(findManyArgsWithTake);
-        console.log(findManyArgs);
 
         return Promise.all([
           await prisma.user.findMany(findManyArgsWithTake),

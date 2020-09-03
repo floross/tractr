@@ -1,17 +1,34 @@
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
-import { NormalizedCacheObject } from '@apollo/react-hooks';
-import { SERVERLESS_URL } from '../constants/servers.constant';
+import { NormalizedCacheObject, ApolloLink } from '@apollo/react-hooks';
+import {
+  SERVERLESS_URL,
+  DOCKER_SERVER_URL,
+} from '../constants/servers.constant';
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function createApolloClient() {
+  // Create First Link
+  const serverLessHttpLink = new HttpLink({
+    uri: SERVERLESS_URL,
+    credentials: 'same-origin',
+  });
+
+  // Create Second Link
+  const dockerServerLink = new HttpLink({
+    uri: DOCKER_SERVER_URL,
+    credentials: 'same-origin',
+  });
+
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
-      uri: SERVERLESS_URL,
-      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-    }),
+    link: ApolloLink.split(
+      // Routes the query to the proper client
+      (operation) => operation.getContext().serverSource === 'docker',
+      dockerServerLink,
+      serverLessHttpLink,
+    ),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {

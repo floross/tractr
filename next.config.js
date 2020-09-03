@@ -10,5 +10,6 @@ module.exports = {
     TRACTR_GRAPHQL_URL:
       process.env.TRACTR_GRAPHQL_URL || process.env.VERCEL_URL,
     TRACTR_GRAPHQL_ENDPOINT: process.env.TRACTR_GRAPHQL_ENDPOINT,
+    TRACTR_DOCKER_SERVER_URL: process.env.TRACTR_DOCKER_SERVER_URL,
   },
 };

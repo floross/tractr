@@ -17,9 +17,8 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the
 scalar DateTime
 
 type Query {
-  allNationalities: [String!]!
-  filteredUsers(contains: String, cursor: String, endDate: DateTime, nationality: String, startDate: DateTime, take: Int): UserSearchResult!
-  user(id: String): User!
+  getAllNationalities: [String!]!
+  getFilteredUsers(contains: String, cursor: String, endDate: DateTime, nationality: String, startDate: DateTime, take: Int): UserSearchResult!
 }
 
 type User {

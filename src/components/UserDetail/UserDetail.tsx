@@ -1,5 +1,4 @@
 import React from 'react';
-import { gql } from '@apollo/client';
 import { User } from '@prisma/client';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,22 +10,6 @@ import {
   faUser,
   faVenusMars,
 } from '@fortawesome/free-solid-svg-icons';
-
-export const USER_DETAIL = gql`
-  query user($id: String!) {
-    user(id: $id) {
-      id
-      email
-      username
-      name
-      phone
-      pictureUrl
-      nationality
-      gender
-      birthdate
-    }
-  }
-`;
 
 export interface UserDetailProps {
   user: User;

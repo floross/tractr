@@ -68,4 +68,4 @@ The `UserList` page is built with NextJS ssr mode and the `UserDetail` page is b
 * Split and normalize form components
 * Use a global state management (promising one is [Recoil.js](https://recoiljs.org/))
 * -> Keep track of the filtered params accros the pages
-
+* Write beautiful error, loading and no users components

@@ -7,9 +7,13 @@ import { faUndoAlt, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 import { MAX_ITEM_PER_LIST } from '../../constants/list.constant';
 import { UserList } from '../UserList';
+import {
+  DOCKER_SERVER_URL,
+  SERVERLESS_URL,
+} from '../../constants/servers.constant';
 
 export const QUERY_FILTERED_USERS = gql`
-  query filteredUsers(
+  query getFilteredUsers(
     $contains: String
     $startDate: DateTime
     $endDate: DateTime
@@ -17,7 +21,7 @@ export const QUERY_FILTERED_USERS = gql`
     $cursor: String
     $take: Int
   ) {
-    filteredUsers(
+    getFilteredUsers(
       contains: $contains
       startDate: $startDate
       endDate: $endDate
@@ -40,8 +44,8 @@ export const QUERY_FILTERED_USERS = gql`
 `;
 
 export const QUERY_ALL_NATIONALITIES = gql`
-  query allNationalities {
-    allNationalities
+  query getAllNationalities {
+    getAllNationalities
   }
 `;
 
@@ -53,7 +57,7 @@ export interface FilteredUsersProps {
 }
 
 export interface FilteredUsersQueryResults {
-  filteredUsers: {
+  getFilteredUsers: {
     users: User[];
     count: number;
     cursor: string;
@@ -96,7 +100,11 @@ export const UserSearch = (): JSX.Element => {
   );
 
   const nationalities = useQuery(QUERY_ALL_NATIONALITIES).data
-    ?.allNationalities;
+    ?.getAllNationalities;
+
+  const [serverSource, setServerSource] = useState<'serverless' | 'docker'>(
+    'serverless',
+  );
 
   const { loading, error, data, fetchMore, networkStatus } = useQuery<
     FilteredUsersQueryResults,
@@ -114,12 +122,15 @@ export const UserSearch = (): JSX.Element => {
       take: MAX_ITEM_PER_LIST,
     },
     notifyOnNetworkStatusChange: true,
+    context: {
+      serverSource,
+    },
   });
 
   const loadingMorePosts = networkStatus === NetworkStatus.fetchMore;
 
   // setFilteredUserCursor();
-  const results = data?.filteredUsers;
+  const results = data?.getFilteredUsers;
   const users = results?.users || [];
   const totalUsers = results?.count;
   const cursor = results?.cursor;
@@ -236,6 +247,49 @@ export const UserSearch = (): JSX.Element => {
             </select>
           </div>
 
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select the server source
+            </label>
+
+            <div className="flex flex-row flex-wrap">
+              <div className="flex-1 mr-2">
+                <input
+                  className="form-radio mr-4 cursor-pointer"
+                  id="server-source-serverless"
+                  type="radio"
+                  value="serverless"
+                  checked={serverSource === 'serverless'}
+                  onChange={() => setServerSource('serverless')}
+                />
+                <label
+                  htmlFor="server-source-serverless"
+                  className="cursor-pointer"
+                >
+                  Serverless ({SERVERLESS_URL})
+                </label>
+              </div>
+            </div>
+            <div className="flex flex-row flex-wrap ">
+              <div className="flex-1 mr-2">
+                <input
+                  className="form-radio mr-4 cursor-pointer"
+                  id="server-source-docker"
+                  type="radio"
+                  value="docker"
+                  checked={serverSource === 'docker'}
+                  onChange={() => setServerSource('docker')}
+                />
+                <label
+                  htmlFor="server-source-docker"
+                  className="cursor-pointer"
+                >
+                  Docker ({DOCKER_SERVER_URL})
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div className="mb-4 flex justify-end">
             <button
               className=" bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
@@ -247,7 +301,7 @@ export const UserSearch = (): JSX.Element => {
         </div>
       </div>
       {loading && !loadingMorePosts ? (
-        <div>Loading users...</div>
+        <div className="w-full text-center my-2">Loading users...</div>
       ) : (
         <UserList users={users} />
       )}

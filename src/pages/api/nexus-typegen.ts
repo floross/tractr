@@ -73,9 +73,8 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Query: { // field return type
-    allNationalities: string[]; // [String!]!
-    filteredUsers: NexusGenRootTypes['UserSearchResult']; // UserSearchResult!
-    user: NexusGenRootTypes['User']; // User!
+    getAllNationalities: string[]; // [String!]!
+    getFilteredUsers: NexusGenRootTypes['UserSearchResult']; // UserSearchResult!
   }
   User: { // field return type
     birthdate: NexusGenScalars['Date']; // Date!
@@ -99,16 +98,13 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Query: {
-    filteredUsers: { // args
+    getFilteredUsers: { // args
       contains?: string | null; // String
       cursor?: string | null; // String
       endDate?: NexusGenScalars['DateTime'] | null; // DateTime
       nationality?: string | null; // String
       startDate?: NexusGenScalars['DateTime'] | null; // DateTime
       take?: number | null; // Int
-    }
-    user: { // args
-      id?: string | null; // String
     }
   }
 }

@@ -27,6 +27,9 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
           </tr>
         </thead>
         <tbody>
+          {users.length === 0 && (
+            <div className="w-full text-center my-2">No user found...</div>
+          )}
           {users.map(
             ({ id, name, pictureUrl, nationality, birthdate, email }) => {
               return (

@@ -1,5 +1,4 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps } from 'next';
 import { User, PrismaClient } from '@prisma/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,14 +8,6 @@ import { Layout } from '../../components/Layout';
 import { UserDetail } from '../../components/UserDetail';
 import { ParsedUrlQuery } from 'querystring';
 import Link from 'next/link';
-
-export const ALL_USERS_ID = gql`
-  {
-    users {
-      id
-    }
-  }
-`;
 
 export interface UserDetailProps {
   user: User;
