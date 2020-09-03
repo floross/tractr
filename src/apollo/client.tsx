@@ -33,7 +33,7 @@ function createApolloClient() {
       typePolicies: {
         Query: {
           fields: {
-            filteredUsers: {
+            getFilteredUsers: {
               keyArgs: ['contains', 'startDate', 'endDate', 'nationality'],
               merge(existing = {}, incoming = {}) {
                 return {
