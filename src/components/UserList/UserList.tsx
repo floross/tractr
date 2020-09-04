@@ -1,7 +1,6 @@
 import React from 'react';
 import { User } from '@prisma/client';
 import Link from 'next/link';
-import { dateFormat } from '../../common/date-format';
 
 export interface UserListProps {
   users: User[];
@@ -13,24 +12,21 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
       <table className="min-w-full leading-normal ">
         <thead>
           <tr>
-            <th className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
               User
             </th>
-            <th className="hidden lg:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th className="hidden lg:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
               Email
             </th>
-            <th className="hidden md:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th className="hidden md:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
               Nationality
             </th>
-            <th className="hidden lg:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th className="hidden lg:table-cell px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
               Birth date
             </th>
           </tr>
         </thead>
         <tbody>
-          {users.length === 0 && (
-            <div className="w-full text-center my-2">No user found...</div>
-          )}
           {users.map(
             ({ id, name, pictureUrl, nationality, birthdate, email }) => {
               return (
@@ -64,7 +60,7 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
                     </td>
                     <td className="hidden lg:table-cell px-5 py-5 border-b border-tractr-grey text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {dateFormat(birthdate)}
+                        {new Date(birthdate).toLocaleDateString()}
                       </p>
                     </td>
                   </tr>
@@ -74,6 +70,11 @@ export const UserList: React.FunctionComponent<UserListProps> = ({ users }) => {
           )}
         </tbody>
       </table>
+      {users.length === 0 && (
+        <div aria-colspan={0} className="w-full text-gray-700 text-center my-2">
+          No user found...
+        </div>
+      )}
     </div>
   );
 };

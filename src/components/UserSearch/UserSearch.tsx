@@ -154,7 +154,7 @@ export const UserSearch = (): JSX.Element => {
   return (
     <div className="min-w-full px-4 sm:px-8 py-4 overflow-x-auto">
       <div className="inline-block min-w-full px-4 shadow rounded-lg overflow-hidden">
-        <div className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        <div className="px-5 py-3 border-b-2 border-gray-200 tractr-grey text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
           Filter
         </div>
         <div className="px-5 py-5 border-b border-tractr-grey text-sm">
@@ -181,7 +181,7 @@ export const UserSearch = (): JSX.Element => {
             />
           </div>
           <div className="mb-4 flex flex-row flex-wrap">
-            <div className="flex-1 mr-2">
+            <div className="w-full mb-4 sm:flex-1 sm:mr-2 sm:mb-0">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="start-date"
@@ -202,7 +202,7 @@ export const UserSearch = (): JSX.Element => {
                 }}
               />
             </div>
-            <div className="flex-1">
+            <div className="w-full sm:flex-1">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="end-date"
@@ -271,7 +271,8 @@ export const UserSearch = (): JSX.Element => {
                   htmlFor="server-source-serverless"
                   className="cursor-pointer"
                 >
-                  Serverless ({SERVERLESS_URL})
+                  Serverless{' '}
+                  <span className="hidden sm:hidden">({SERVERLESS_URL})</span>
                 </label>
               </div>
             </div>
@@ -289,18 +290,21 @@ export const UserSearch = (): JSX.Element => {
                   htmlFor="server-source-docker"
                   className="cursor-pointer"
                 >
-                  Docker ({DOCKER_SERVER_URL})
+                  Docker
+                  <span className="hidden sm:hidden">
+                    ({DOCKER_SERVER_URL})
+                  </span>
                 </label>
               </div>
             </div>
           </div>
 
-          <div className="mb-4 flex justify-end">
+          <div className="mb-4 flex justify-center sm:justify-end">
             <button
-              className=" bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
+              className=" bg-white hover:bg-tractr-grey text-gray-700 font-bold py-2 px-4 rounded shadow"
               onClick={() => resetFilters(setFilteredParams, setServerSource)}
             >
-              <FontAwesomeIcon className="h-4 w-4" icon={faUndoAlt} /> Reset
+              <FontAwesomeIcon className="h-4 w-4 " icon={faUndoAlt} /> Reset
             </button>
           </div>
         </div>
@@ -313,7 +317,7 @@ export const UserSearch = (): JSX.Element => {
       {isMoreUserToFetch && (
         <div className="min-w-full flex justify-center items-center h-16">
           <button
-            className="bg-white hover:bg-tractr-grey text-black font-bold py-2 px-4 rounded shadow"
+            className="bg-white hover:bg-tractr-grey text-gray-700 font-bold py-2 px-4 rounded shadow"
             disabled={loadingMorePosts}
             onClick={() =>
               fetchMore({
